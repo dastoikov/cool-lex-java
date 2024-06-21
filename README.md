@@ -13,12 +13,10 @@ Can easily be re-written for lower versions, as primitive iterators and an exact
 
 ## Development
 
-On the map:
+Not planned.
 
-* Adding more algorithms.
+Ideas:
 
-Other ideas:
-
-* Mavenization.
+* Additional algorithms as found in the paper.
 * Inclusion of testing framework.
 * Algorithm implementations for constrained computing environments.
