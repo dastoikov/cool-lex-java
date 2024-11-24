@@ -17,6 +17,8 @@ public class Test {
     testLinkedList(10, 4);
     testLinkedList(15, 7);
     testLinkedList(15, 6);
+    //
+    testElementIterator(3, 2);
   }
 
   //
@@ -39,7 +41,8 @@ public class Test {
       int numElem = 0;
       for (PrimitiveIterator.OfInt elemIter = combIter.next();
           elemIter.hasNext();
-          ++numElem, ++hits[elemIter.nextInt()]) ;
+          ++numElem, ++hits[elemIter.nextInt()])
+        ;
 
       assertEq("number of elements in a combination", k, numElem);
     }
@@ -52,9 +55,29 @@ public class Test {
     }
   }
 
+  static void testElementIterator(int n, int k) {
+    for (Iterator<PrimitiveIterator.OfInt> combIter = CoollexLinkedList.combinations(n, k);
+        combIter.hasNext(); ) {
+
+      // number of elements in this combination
+      int numElem = 0;
+      PrimitiveIterator.OfInt elemIter = combIter.next();
+      for (; numElem < k; ++numElem, elemIter.next())
+        ;
+
+      assertFalse("hasNext() after all elements yielded", elemIter.hasNext());
+    }
+  }
+
   //
   // Helper methods.
   //
+
+  private static void assertFalse(String message, boolean actual) {
+    if (actual) {
+      throw new AssertionError(format("%s: expected %b, actual %b", message, false, actual));
+    }
+  }
 
   private static void assertEq(String message, long expected, long actual) {
     if (expected != actual) {
@@ -80,7 +103,9 @@ public class Test {
     return r;
   }
 
-  /** @param n positive integer. */
+  /**
+   * @param n positive integer.
+   */
   private static long factorial0(long n) {
     return multiplyAll(n, 1);
   }
