@@ -17,8 +17,10 @@ public class Test {
     testLinkedList(10, 4);
     testLinkedList(15, 7);
     testLinkedList(15, 6);
-    //
+
+    // linked-list iterator tests
     testElementIterator(3, 2);
+    testCombinationsIterator(3, 0);
   }
 
   //
@@ -59,14 +61,21 @@ public class Test {
     for (Iterator<PrimitiveIterator.OfInt> combIter = CoollexLinkedList.combinations(n, k);
         combIter.hasNext(); ) {
 
-      // number of elements in this combination
-      int numElem = 0;
       PrimitiveIterator.OfInt elemIter = combIter.next();
-      for (; numElem < k; ++numElem, elemIter.next())
+      for (int i = 0; i < k; ++i, elemIter.next())
         ;
-
       assertFalse("hasNext() after all elements yielded", elemIter.hasNext());
     }
+  }
+
+  static void testCombinationsIterator(int n, int k) {
+    Iterator<PrimitiveIterator.OfInt> combIter = CoollexLinkedList.combinations(n, k);
+    long j = numComb(n, k);
+
+    while (--j >= 0) {
+      combIter.next();
+    }
+    assertFalse("hasNext() after all combinations yielded", combIter.hasNext());
   }
 
   //
