@@ -13,8 +13,6 @@ Can easily be re-written for lower versions, as primitive iterators and an exact
 
 ## Development
 
-Not planned.
-
 Ideas:
 
 * Additional algorithms as found in the paper.
