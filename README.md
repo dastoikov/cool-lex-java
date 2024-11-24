@@ -16,5 +16,5 @@ Can easily be re-written for lower versions, as primitive iterators and an exact
 Ideas:
 
 * Additional algorithms as found in the paper.
-* Inclusion of testing framework.
+* Flyweight implementation of the iterator over the elements of a combination (CoollexLinkedList, SelectedIndicesIterator).
 * Algorithm implementations for constrained computing environments.
