@@ -190,10 +190,10 @@ public class CoollexLinkedList {
         if (currNode == null) {
           throw new NoSuchElementException();
         }
-        int toReturn = i++;
+        int retval = i++;
         nextValueTrueNode(currNode.next);
 
-        return toReturn;
+        return retval;
       }
 
       private void nextValueTrueNode(Algorithm.Node from) {
