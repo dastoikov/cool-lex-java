@@ -24,6 +24,7 @@ public class SimpleMath {
    * @param n number of elements to combine; must be {@code >= k}.
    * @param k number of elements in each combination; must be non-negative.
    * @return number of combinations as described above.
+   * @throws ArithmeticException if numeric overflow occurs
    */
   public static long numComb(long n, long k) {
     if (k < 0 || n < 0 || k > n) {
@@ -53,6 +54,7 @@ public class SimpleMath {
 
   /**
    * @param n positive integer.
+   * @throws ArithmeticException if numeric overflow occurs
    */
   public static long factorial(long n) {
     return multiplyAll(n, 1);
