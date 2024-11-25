@@ -17,6 +17,8 @@ package com.samldom.test.util;
  * Simple/naive implementations of Math operations for the purposes of aiding in writing auto tests.
  */
 public class SimpleMath {
+  // suppress utility class instantiation.
+  private SimpleMath() {}
 
   /**
    * Calculates the number of combinations for the specified {@code k} and {@code n}.
