@@ -5,6 +5,24 @@ You may need to obtain permission to use Cool-lex, as governed by applicable law
 
 The code in this repository is authored by the cool-lex-java [contributors](CONTRIBUTORS), and is licensed under Apache License, version 2.0.License.
 
+## Example
+
+```java
+String[] fruits = {"Apple", "Banana", "Cucumber"};
+CoollexLinkedList.combinations(3, 2)
+    .forEachRemaining(
+        combination -> {
+          combination.forEachRemaining(
+              (int element) -> System.out.format("%s ", fruits[element]));
+          System.out.println();
+        });
+
+// prints:
+//    Apple Banana
+//    Banana Cucumber
+//    Apple Cucumber
+```
+
 ## Dependencies
 
 Minimum Java 8.
