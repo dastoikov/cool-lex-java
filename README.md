@@ -33,6 +33,12 @@ Can easily be re-written for lower versions, as primitive iterators and an exact
 
 Ideas:
 
+**General**
+
 * Additional algorithms as found in the paper.
-* Flyweight implementation of the iterator over the elements of a combination (CoollexLinkedList, SelectedIndicesIterator).
 * Algorithm implementations for constrained computing environments.
+
+**Linked list**
+
+* Flyweight implementation of the iterator over the elements of a combination (CoollexLinkedList, SelectedIndicesIterator).
+* Analyze if it would be possible to make the CoollexLinkedList algorithm run in parallel.
