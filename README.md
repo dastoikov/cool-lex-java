@@ -27,7 +27,7 @@ CoollexLinkedList.combinations(3, 2)
 
 Minimum Java 8.
 
-Can easily be re-written for lower versions, as primitive iterators and an exact-arithmetic function (in tests) are the sole dependencies on version 8.
+Can easily be re-written for lower versions, as primitive iterators and an exact-arithmetic function (used in tests) are the sole dependencies on version 8.
 
 ## Development
 
