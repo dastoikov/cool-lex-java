@@ -23,6 +23,18 @@ CoollexLinkedList.combinations(3, 2)
 //    Apple Cucumber
 ```
 
+## Usage
+
+Maven (repository: `<url>https://maven.pkg.github.com/dastoikov/cool-lex-java</url>`)
+
+```xml
+<dependency>
+  <groupId>com.samldom.coollex</groupId>
+  <artifactId>cool-lex-java</artifactId>
+  <version>1.0</version>
+</dependency>
+```
+
 ## Dependencies
 
 Minimum Java 8.
