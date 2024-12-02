@@ -8,19 +8,17 @@ The code in this repository is authored by the cool-lex-java [contributors](CONT
 ## Example
 
 ```java
-String[] fruits = {"Apple", "Banana", "Cucumber"};
-CoollexLinkedList.combinations(3, 2)
+CoollexLinkedList.combinations(4, 3)
     .forEachRemaining(
         combination -> {
-          combination.forEachRemaining(
-              (int element) -> System.out.format("%s ", fruits[element]));
+          combination.forEachRemaining((int element) -> System.out.format("%d ", element));
           System.out.println();
         });
-
 // prints:
-//    Apple Banana
-//    Banana Cucumber
-//    Apple Cucumber
+// 0 1 2
+// 1 2 3
+// 0 2 3
+// 0 1 3
 ```
 
 ## Usage
