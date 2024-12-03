@@ -8,29 +8,16 @@ The code in this repository is authored by the cool-lex-java [contributors](CONT
 ## Example
 
 ```java
-CoollexLinkedList.combinations(4, 3)
+CoollexLinkedList.combinations(3, 2)
     .forEachRemaining(
         combination -> {
-          combination.forEachRemaining((int element) -> System.out.format("%d ", element));
+          combination.forEachRemaining((int element) -> System.out.format("%c ", element + 'A'));
           System.out.println();
         });
 // prints:
-// 0 1 2
-// 1 2 3
-// 0 2 3
-// 0 1 3
-```
-
-## Usage
-
-Maven (repository: `<url>https://maven.pkg.github.com/dastoikov/cool-lex-java</url>`)
-
-```xml
-<dependency>
-  <groupId>com.samldom.coollex</groupId>
-  <artifactId>cool-lex-java</artifactId>
-  <version>1.0</version>
-</dependency>
+// A B
+// B C
+// A C
 ```
 
 ## Dependencies
