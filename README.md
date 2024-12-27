@@ -30,5 +30,5 @@ Can easily be re-written for lower versions, as primitive iterators and an exact
 
 Ideas:
 
-* Additional algorithms as found in the paper.
-* Algorithm implementations for constrained computing environments.
+* Incorporation of additional algorithms as presented in the research paper, potentially better optimized for execution on contemporary architectures.
+* Development of algorithm implementations suitable for resource-constrained computing environments.
