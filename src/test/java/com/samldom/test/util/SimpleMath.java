@@ -27,6 +27,7 @@ public class SimpleMath {
    * @param k number of elements in each combination; must be non-negative.
    * @return number of combinations as described above.
    * @throws ArithmeticException if numeric overflow occurs
+   * @throws IllegalArgumentException if {@code k < 0 || n < 0 || k > n}
    */
   public static long numComb(long n, long k) {
     if (k < 0 || n < 0 || k > n) {
@@ -57,8 +58,12 @@ public class SimpleMath {
   /**
    * @param n positive integer.
    * @throws ArithmeticException if numeric overflow occurs
+   * @throws IllegalArgumentException if {@code n<0}
    */
   public static long factorial(long n) {
-    return multiplyAll(n, 1);
+    if (n < 0) {
+      throw new IllegalArgumentException();
+    }
+    return n == 0 ? 1 : multiplyAll(n, 1);
   }
 }
