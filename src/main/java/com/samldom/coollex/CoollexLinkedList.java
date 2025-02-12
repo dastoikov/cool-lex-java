@@ -72,7 +72,7 @@ public class CoollexLinkedList {
       b = new Node(true);
       x = b;
 
-      while (--t >= 1) {
+      while (--t > 0) {
         x = x.createNext(true);
       }
 
