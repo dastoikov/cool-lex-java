@@ -56,7 +56,7 @@ public class SimpleMath {
   }
 
   /**
-   * @param n positive integer.
+   * @param n non-negative integer.
    * @throws ArithmeticException if numeric overflow occurs
    * @throws IllegalArgumentException if {@code n<0}
    */
