@@ -34,7 +34,7 @@ public class SimpleMath {
       throw new IllegalArgumentException();
     }
     if (k == 0) {
-      return 0;
+      return 1;
     }
     return multiplyAll(n, n - k + 1) / factorial(k);
   }

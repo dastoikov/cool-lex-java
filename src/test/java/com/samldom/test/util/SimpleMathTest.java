@@ -26,4 +26,9 @@ public class SimpleMathTest {
   public void testFactorialOfLargePositiveInteger() {
     assertThrows(ArithmeticException.class, () -> SimpleMath.factorial(Integer.MAX_VALUE));
   }
+
+  @Test
+  public void testNumComb_k0() {
+    assertEquals(1, SimpleMath.numComb(2, 0));
+  }
 }

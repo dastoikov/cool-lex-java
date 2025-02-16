@@ -51,6 +51,11 @@ public class CoollexLinkedListTest {
   }
 
   @Test
+  public void testLinkedList_1_1() {
+    testLinkedList(1, 1);
+  }
+
+  @Test
   public void testElementIterator() {
     testElementsIterator(3, 2);
   }
