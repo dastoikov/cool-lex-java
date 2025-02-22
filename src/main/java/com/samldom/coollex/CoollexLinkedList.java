@@ -127,11 +127,9 @@ public class CoollexLinkedList {
 
   private static class CombinationsIterator implements Iterator<PrimitiveIterator.OfInt> {
 
-    private final Algorithm coolLex;
     private Iterator<PrimitiveIterator.OfInt> gen;
 
     CombinationsIterator(Algorithm coolLex) {
-      this.coolLex = coolLex;
       gen =
           new Iterator<PrimitiveIterator.OfInt>() {
             @Override
@@ -143,7 +141,7 @@ public class CoollexLinkedList {
                       // check whether to advance or fail (java.util.Iterator contract)
                       if (coolLex.hasNext()) {
                         coolLex.next();
-                        return SelectedIndicesIterator.ITER.reset(coolLex);
+                        return SelectedIndicesIterator.SERIAL.reset(coolLex);
                       }
                       throw new NoSuchElementException();
                     }
@@ -154,7 +152,7 @@ public class CoollexLinkedList {
                     }
                   };
               // the algorithm is initially positioned at the first combination
-              return SelectedIndicesIterator.ITER.reset(coolLex);
+              return SelectedIndicesIterator.SERIAL.reset(coolLex);
             }
 
             @Override
@@ -185,7 +183,8 @@ public class CoollexLinkedList {
      * </pre>
      */
     private enum SelectedIndicesIterator implements PrimitiveIterator.OfInt {
-      ITER;
+      SERIAL; // use a singleton instance for serial processing
+
       private Algorithm.Node currNode;
       private int i;
 
