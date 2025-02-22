@@ -143,7 +143,7 @@ public class CoollexLinkedList {
                       // check whether to advance or fail (java.util.Iterator contract)
                       if (coolLex.hasNext()) {
                         coolLex.next();
-                        return new SelectedIndicesIterator();
+                        return SelectedIndicesIterator.ITER.reset(coolLex);
                       }
                       throw new NoSuchElementException();
                     }
@@ -154,7 +154,7 @@ public class CoollexLinkedList {
                     }
                   };
               // the algorithm is initially positioned at the first combination
-              return new SelectedIndicesIterator();
+              return SelectedIndicesIterator.ITER.reset(coolLex);
             }
 
             @Override
@@ -184,13 +184,15 @@ public class CoollexLinkedList {
      * iterator yields:  01 3  6
      * </pre>
      */
-    private class SelectedIndicesIterator implements PrimitiveIterator.OfInt {
-
+    private enum SelectedIndicesIterator implements PrimitiveIterator.OfInt {
+      ITER;
       private Algorithm.Node currNode;
       private int i;
 
-      SelectedIndicesIterator() {
-        nextValueTrueNode(coolLex.b);
+      SelectedIndicesIterator reset(Algorithm alg) {
+        i = 0;
+        nextValueTrueNode(alg.b);
+        return this;
       }
 
       @Override
