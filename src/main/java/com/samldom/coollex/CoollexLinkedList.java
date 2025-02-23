@@ -126,52 +126,30 @@ public class CoollexLinkedList {
   }
 
   private static class CombinationsIterator implements Iterator<OfInt> {
-    private final Iterator<OfInt> onward;
-    private Iterator<OfInt> gen;
+
+    private final Algorithm coolLex;
+    private boolean first = true;
 
     CombinationsIterator(Algorithm coolLex) {
-      onward =
-          new Iterator<OfInt>() {
-
-            @Override
-            public boolean hasNext() {
-              return coolLex.hasNext();
-            }
-
-            @Override
-            public OfInt next() {
-              if (!coolLex.hasNext()) {
-                throw new NoSuchElementException();
-              }
-              coolLex.next();
-              return SelectedIndicesIterator.SERIAL.reset(coolLex);
-            }
-          };
-      gen =
-          new Iterator<OfInt>() {
-
-            @Override
-            public OfInt next() {
-              // the algorithm is initially positioned at the first combination
-              gen = onward;
-              return SelectedIndicesIterator.SERIAL.reset(coolLex);
-            }
-
-            @Override
-            public boolean hasNext() {
-              return true;
-            }
-          };
+      this.coolLex = coolLex;
     }
 
     @Override
     public boolean hasNext() {
-      return gen != onward || onward.hasNext();
+      return first || coolLex.hasNext();
     }
 
+    // the algorithm is initially positioned at the first combination
     @Override
     public OfInt next() {
-      return gen.next();
+      if (!first) {
+        if (!coolLex.hasNext()) {
+          throw new NoSuchElementException();
+        }
+        coolLex.next();
+      }
+      first = false; // avoid branches
+      return SelectedIndicesIterator.SERIAL.reset(coolLex);
     }
 
     /**
