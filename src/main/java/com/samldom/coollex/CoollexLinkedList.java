@@ -125,17 +125,17 @@ public class CoollexLinkedList {
     }
   }
 
-  private static class CombinationsIterator implements Iterator<PrimitiveIterator.OfInt> {
+  private static class CombinationsIterator implements Iterator<OfInt> {
 
-    private Iterator<PrimitiveIterator.OfInt> gen;
+    private Iterator<OfInt> gen;
 
     CombinationsIterator(Algorithm coolLex) {
       gen =
-          new Iterator<PrimitiveIterator.OfInt>() {
+          new Iterator<OfInt>() {
             @Override
             public OfInt next() {
               gen =
-                  new Iterator<PrimitiveIterator.OfInt>() {
+                  new Iterator<OfInt>() {
                     @Override
                     public OfInt next() {
                       // check whether to advance or fail (java.util.Iterator contract)
@@ -182,7 +182,7 @@ public class CoollexLinkedList {
      * iterator yields:  01 3  6
      * </pre>
      */
-    private enum SelectedIndicesIterator implements PrimitiveIterator.OfInt {
+    private enum SelectedIndicesIterator implements OfInt {
       SERIAL; // use a singleton instance for serial processing
 
       private Algorithm.Node currNode;
