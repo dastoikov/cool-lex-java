@@ -126,38 +126,39 @@ public class CoollexLinkedList {
   }
 
   private static class CombinationsIterator implements Iterator<OfInt> {
-
+    private final Iterator<OfInt> onward;
     private Iterator<OfInt> gen;
 
     CombinationsIterator(Algorithm coolLex) {
-      gen =
+      onward =
           new Iterator<OfInt>() {
+
+            @Override
+            public boolean hasNext() {
+              return coolLex.hasNext();
+            }
+
             @Override
             public OfInt next() {
-              gen =
-                  new Iterator<OfInt>() {
-                    @Override
-                    public OfInt next() {
-                      // check whether to advance or fail (java.util.Iterator contract)
-                      if (coolLex.hasNext()) {
-                        coolLex.next();
-                        return SelectedIndicesIterator.SERIAL.reset(coolLex);
-                      }
-                      throw new NoSuchElementException();
-                    }
+              if (!coolLex.hasNext()) {
+                throw new NoSuchElementException();
+              }
+              coolLex.next();
+              return SelectedIndicesIterator.SERIAL.reset(coolLex);
+            }
+          };
+      gen =
+          new Iterator<OfInt>() {
 
-                    @Override
-                    public boolean hasNext() {
-                      return coolLex.hasNext();
-                    }
-                  };
+            @Override
+            public OfInt next() {
               // the algorithm is initially positioned at the first combination
+              gen = onward;
               return SelectedIndicesIterator.SERIAL.reset(coolLex);
             }
 
             @Override
             public boolean hasNext() {
-              // the algorithm is initially positioned at the first combination
               return true;
             }
           };
@@ -165,7 +166,7 @@ public class CoollexLinkedList {
 
     @Override
     public boolean hasNext() {
-      return gen.hasNext();
+      return gen != onward || onward.hasNext();
     }
 
     @Override
