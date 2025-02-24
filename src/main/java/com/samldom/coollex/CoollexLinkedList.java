@@ -19,6 +19,9 @@ import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;
 import java.util.PrimitiveIterator.OfInt;
 
+import com.samldom.util.iter.IntSeq;
+import com.samldom.util.iter.Seq;
+
 /**
  * The <em>cool-lex</em> order and algorithms have been invented by Frank Ruskey and Aaron Williams.
  * Hats off.
@@ -39,8 +42,7 @@ public class CoollexLinkedList {
    *
    * @param n number of elements to combine; must be {@code >= k}.
    * @param k number of elements in each combination; must be non-negative.
-   * @return an empty iterator if {@code 0} was specified as the number of elements in a
-   *     combination; the generated combinations otherwise.
+   * @return an empty iterator if {@code k=0}; the generated combinations otherwise.
    * @throws IllegalArgumentException if {@code k < 0 || n < k}
    */
   public static Iterator<PrimitiveIterator.OfInt> combinations(int n, int k) {
@@ -55,6 +57,29 @@ public class CoollexLinkedList {
     return (k == 0)
         ? Collections.emptyIterator()
         : new CombinationsIterator(new Algorithm(n - k, k));
+  }
+
+  /**
+   * Returns a sequence of combinations. Each combination is a sequence of integers, representing
+   * the indices of the selected elements.
+   *
+   * @param n number of elements to combine; must be {@code >= k}.
+   * @param k number of elements in each combination; must be non-negative.
+   * @return an empty sequence if {@code k=0}; the generated combinations otherwise.
+   * @throws IllegalArgumentException if {@code k < 0 || n < k}
+   */
+  public static Seq<IntSeq> sequence(int n, int k) {
+    if (k < 0) {
+      throw new IllegalArgumentException(
+          "negative value specified for the number of elements in a combination");
+    }
+    if (n < k) {
+      throw new IllegalArgumentException(
+          "number of elements to combine is less than the number of elements in a combination");
+    }
+    return k == 0
+        ? yield -> {} // empty sequence
+        : combinationsSeq(new Algorithm(n - k, k));
   }
 
   static class Algorithm {
@@ -194,5 +219,22 @@ public class CoollexLinkedList {
           ;
       }
     }
+  }
+
+  static Seq<IntSeq> combinationsSeq(Algorithm coollex) {
+    return yield -> {
+      for (; yield.test(elementsSeq(coollex.b)) && coollex.hasNext(); coollex.next())
+        ;
+    };
+  }
+
+  static IntSeq elementsSeq(Algorithm.Node from) {
+    return yield -> {
+      int i = 0;
+      for (Algorithm.Node curr = from;
+          curr != null && (!curr.value || yield.test(i));
+          curr = curr.next, i++)
+        ;
+    };
   }
 }

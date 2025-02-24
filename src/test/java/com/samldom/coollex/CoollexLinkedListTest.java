@@ -23,6 +23,9 @@ import java.util.PrimitiveIterator;
 
 import org.junit.jupiter.api.Test;
 
+import com.samldom.util.iter.IntSeq;
+import com.samldom.util.iter.Seq;
+
 public class CoollexLinkedListTest {
 
   @Test
@@ -118,5 +121,55 @@ public class CoollexLinkedListTest {
       combIter.next();
     }
     assertFalse(combIter.hasNext(), "hasNext() after all combinations yielded");
+  }
+
+  @Test
+  public void testLinkedListSequence() {
+    class Tester {
+      void test(int n, int k) {
+        // array index denotes an element
+        // value at given index denotes how many times this element appeared in a combination
+        int[] hits = new int[n];
+        Arrays.fill(hits, 0);
+
+        class IntVar {
+          int val = 0;
+        }
+
+        // total number of combinations yielded by the algorithm
+        IntVar numComb = new IntVar();
+
+        // number of elements in the current combination
+        IntVar numElem = new IntVar();
+
+        Seq<IntSeq> sequence = CoollexLinkedList.sequence(n, k);
+        sequence.forEach(
+            combination -> {
+              ++numComb.val;
+              combination.forEach(
+                  element -> {
+                    ++numElem.val;
+                    ++hits[element];
+                  });
+
+              assertEquals(k, numElem.val, "number of elements in a combination");
+              numElem.val = 0;
+            });
+
+        assertEquals(numComb(n, k), numComb.val, "number of combinations");
+
+        long occur = numComb(n - 1, k - 1);
+        for (int hit : hits) {
+          assertEquals(occur, hit, "number of combinations where each element appears");
+        }
+      }
+    }
+    Tester tester = new Tester();
+
+    tester.test(1, 1);
+    tester.test(9, 9);
+    tester.test(10, 4);
+    tester.test(15, 6);
+    tester.test(15, 7);
   }
 }
