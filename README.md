@@ -66,10 +66,13 @@ Minimum Java 8.
 
 Porting to earlier versions is straightforward.
 
+No additional dependencies.
+
 ## Development
 
 Ideas:
 
+* Research parallelization.
 * Incorporation of additional algorithms as presented in the research paper, potentially better optimized for execution on contemporary architectures.
 * Development of algorithm implementations suitable for resource-constrained computing environments.
 
