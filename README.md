@@ -15,6 +15,17 @@ Golang-style iterators offer between 7% and 8% better performance compared to cl
 [Golang-style](https://pkg.go.dev/iter) iterators:
 
 ```java
+ CoollexLinkedList.sequence(3, 2)
+      .forEach(
+          combination -> {
+            combination.forEach(System.out::print);
+            System.out.println();
+          });
+```
+
+or
+
+```java
   CoollexLinkedList.sequence(3, 2)
       .doWhile(
           combination -> {
@@ -31,17 +42,6 @@ Golang-style iterators offer between 7% and 8% better performance compared to cl
 // 01
 // 12
 // 02
-```
-
-or
-
-```java
- CoollexLinkedList.sequence(3, 2)
-      .forEach(
-          combination -> {
-            combination.forEach(System.out::print);
-            System.out.println();
-          });
 ```
 
 ---
