@@ -9,7 +9,6 @@ The code in this repository is authored by the cool-lex-java [contributors](CONT
 
 Golang-style iterators offer between 7% and 8% better performance compared to classic Java iterators.
 
-
 ## Examples
 
 [Golang-style](https://pkg.go.dev/iter) iterators:
@@ -65,7 +64,7 @@ CoollexLinkedList.combinations(3, 2)
 
 Minimum Java 8.
 
-Can easily be re-written for lower versions, as primitive iterators and an exact-arithmetic function (in tests) are the sole dependencies on version 8.
+Porting to earlier versions is straightforward.
 
 ## Development
 
@@ -73,3 +72,25 @@ Ideas:
 
 * Incorporation of additional algorithms as presented in the research paper, potentially better optimized for execution on contemporary architectures.
 * Development of algorithm implementations suitable for resource-constrained computing environments.
+
+## Installation
+
+```xml
+<project>
+  <repositories>
+    <repository>
+      <id>github</id>
+      <name>GitHub dastoikov Apache Maven Packages</name>
+      <url>https://maven.pkg.github.com/dastoikov/cool-lex-java</url>
+    </repository>
+  </repositories>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.samldom.coollex</groupId>
+      <artifactId>cool-lex-java</artifactId>
+      <version>1.1.1</version>
+     </dependency>
+    </dependencies>
+</project>
+```
