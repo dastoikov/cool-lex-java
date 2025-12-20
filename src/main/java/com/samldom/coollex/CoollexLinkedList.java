@@ -174,7 +174,7 @@ public class CoollexLinkedList {
         coolLex.next();
       }
       first = false; // avoid branches
-      return SelectedIndicesIterator.SERIAL.reset(coolLex);
+      return new SelectedIndicesIterator();
     }
 
     /**
@@ -186,16 +186,12 @@ public class CoollexLinkedList {
      * iterator yields:  01 3  6
      * </pre>
      */
-    private enum SelectedIndicesIterator implements OfInt {
-      SERIAL; // use a singleton instance for serial processing
-
+    private class SelectedIndicesIterator implements OfInt {
       private Algorithm.Node currNode;
       private int i;
 
-      SelectedIndicesIterator reset(Algorithm alg) {
-        i = 0;
-        nextValueTrueNode(alg.b);
-        return this;
+      SelectedIndicesIterator() {
+        nextValueTrueNode(coolLex.b);
       }
 
       @Override

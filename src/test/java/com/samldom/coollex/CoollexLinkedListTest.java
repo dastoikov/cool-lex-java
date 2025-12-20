@@ -16,13 +16,21 @@ package com.samldom.coollex;
 import static com.samldom.test.util.SimpleMath.numComb;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.PrimitiveIterator;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
+import com.samldom.test.util.Iters;
+import com.samldom.test.util.SimpleMath;
 import com.samldom.util.iter.IntSeq;
 import com.samldom.util.iter.Seq;
 
@@ -171,5 +179,31 @@ public class CoollexLinkedListTest {
     tester.test(10, 4);
     tester.test(15, 6);
     tester.test(15, 7);
+  }
+
+  @ParameterizedTest
+  @MethodSource
+  public void testSameThreadMultipleInstances(int n, int k) {
+    // verify test preconditions
+    assertTrue(SimpleMath.numComb(n, k) > 1);
+
+    Iterator<PrimitiveIterator.OfInt> a = CoollexLinkedList.combinations(n, k);
+    Iterator<PrimitiveIterator.OfInt> b = CoollexLinkedList.combinations(n, k);
+
+    PrimitiveIterator.OfInt elementsOfA = a.next(); // a is at c1
+    b.next(); // b is at c1
+    b.next(); // b is at c2
+
+    assertEquals(
+        0,
+        Iters.cmp(
+            // c1 always consists of elements with indices [0,k]
+            IntStream.range(0, k).iterator(),
+            // sort indices, as there are no guarantees of any particular element order
+            Iters.sorted(elementsOfA)));
+  }
+
+  static Stream<Arguments> testSameThreadMultipleInstances() {
+    return Stream.of(Arguments.of(3, 2));
   }
 }
