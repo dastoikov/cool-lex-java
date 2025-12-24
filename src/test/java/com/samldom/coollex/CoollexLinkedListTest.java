@@ -37,36 +37,6 @@ import com.samldom.util.iter.Seq;
 public class CoollexLinkedListTest {
 
   @Test
-  public void testLinkedList_49_6() {
-    testLinkedList(49, 6);
-  }
-
-  @Test
-  public void testLinkedList_9_9() {
-    testLinkedList(9, 9);
-  }
-
-  @Test
-  public void testLinkedList_15_7() {
-    testLinkedList(15, 7);
-  }
-
-  @Test
-  public void testLinkedList_15_6() {
-    testLinkedList(15, 6);
-  }
-
-  @Test
-  public void testLinkedList_10_4() {
-    testLinkedList(10, 4);
-  }
-
-  @Test
-  public void testLinkedList_1_1() {
-    testLinkedList(1, 1);
-  }
-
-  @Test
   public void testElementIterator() {
     testElementsIterator(3, 2);
   }
@@ -76,11 +46,9 @@ public class CoollexLinkedListTest {
     testCombinationsIterator(3, 2);
   }
 
-  //
-  // Test methods (avoid @ParameterizedTest for the time being)
-  //
-
-  private static void testLinkedList(int n, int k) {
+  @ParameterizedTest
+  @MethodSource
+  public void testLinkedList(int n, int k) {
     // array index denotes an element
     // value at given index denotes how many times this element appeared in a combination
     int[] hits = new int[n];
@@ -108,6 +76,16 @@ public class CoollexLinkedListTest {
     for (int hit : hits) {
       assertEquals(occur, hit, "number of combinations where each element appears");
     }
+  }
+
+  static Stream<Arguments> testLinkedList() {
+    return Stream.of(
+        Arguments.of(1, 1),
+        Arguments.of(10, 4),
+        Arguments.of(15, 6),
+        Arguments.of(15, 7),
+        Arguments.of(49, 6),
+        Arguments.of(9, 9));
   }
 
   private static void testElementsIterator(int n, int k) {
