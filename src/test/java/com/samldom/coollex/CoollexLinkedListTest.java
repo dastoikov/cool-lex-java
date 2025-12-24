@@ -36,16 +36,6 @@ import com.samldom.util.iter.Seq;
 
 public class CoollexLinkedListTest {
 
-  @Test
-  public void testElementIterator() {
-    testElementsIterator(3, 2);
-  }
-
-  @Test
-  public void testCombinationsIterator() {
-    testCombinationsIterator(3, 2);
-  }
-
   @ParameterizedTest
   @MethodSource
   public void testLinkedList(int n, int k) {
@@ -88,6 +78,11 @@ public class CoollexLinkedListTest {
         Arguments.of(9, 9));
   }
 
+  @Test
+  public void testElementIterator() {
+    testElementsIterator(3, 2);
+  }
+
   private static void testElementsIterator(int n, int k) {
     for (Iterator<PrimitiveIterator.OfInt> combIter = CoollexLinkedList.combinations(n, k);
         combIter.hasNext(); ) {
@@ -97,6 +92,11 @@ public class CoollexLinkedListTest {
         ;
       assertFalse(elemIter.hasNext(), "hasNext() after all elements yielded");
     }
+  }
+
+  @Test
+  public void testCombinationsIterator() {
+    testCombinationsIterator(3, 2);
   }
 
   private static void testCombinationsIterator(int n, int k) {
