@@ -79,7 +79,7 @@ public class Iters {
   /**
    * Returns a sequence backed by the specified iterator.
    *
-   * @param <E> the type of the elements produced by the iterator
+   * @param <T> the type of the elements produced by the iterator
    * @param iter the backing iterator
    * @return a lazy sequence: the iterator is traversed as sequence elements are consumed.
    * @throws NullPointerException if {@code iter} is null.
