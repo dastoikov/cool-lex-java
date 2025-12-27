@@ -13,8 +13,12 @@
  */
 package com.samldom.test.util;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -22,15 +26,15 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-public class ItersTest {
+class ItersTest {
   @ParameterizedTest
   @MethodSource
-  public void testCmp(IntStream a, IntStream b, int expected) {
+  void cmp(IntStream a, IntStream b, int expected) {
     int actual = Iters.cmp(a.iterator(), b.iterator());
     assertEquals(expected, actual);
   }
 
-  static Stream<Arguments> testCmp() {
+  static Stream<Arguments> cmp() {
     return Stream.of(
         Arguments.of(IntStream.of(1, 2), IntStream.of(1, 2), 0),
         Arguments.of(IntStream.of(1, 2), IntStream.of(2, 1), -1),
@@ -38,21 +42,43 @@ public class ItersTest {
         Arguments.of(IntStream.of(2, 1), IntStream.of(1, 2), 1),
         Arguments.of(IntStream.of(2, 1, 1), IntStream.of(2, 1, 1, 2), -1),
         Arguments.of(IntStream.of(2, 1, 1, 2), IntStream.of(2, 1, 1), 1),
-        Arguments.of(IntStream.of(2, 1, 1, 2), IntStream.of(2, 1, 2), -1)
-        /**/ );
+        Arguments.of(IntStream.of(2, 1, 1, 2), IntStream.of(2, 1, 2), -1));
   }
 
   @ParameterizedTest
   @MethodSource
-  public void testSorted(IntStream input, IntStream expected) {
+  void sorted(IntStream input, IntStream expected) {
     assertEquals(0, Iters.cmp(expected.iterator(), Iters.sorted(input.iterator())));
   }
 
-  static Stream<Arguments> testSorted() {
+  static Stream<Arguments> sorted() {
     return Stream.of(
         Arguments.of(IntStream.of(1, 2), IntStream.of(1, 2)),
         Arguments.of(IntStream.of(2, 1), IntStream.of(1, 2)),
-        Arguments.of(IntStream.of(), IntStream.of())
-        /**/ );
+        Arguments.of(IntStream.of(), IntStream.of()));
+  }
+
+  @ParameterizedTest
+  @MethodSource
+  void asSeq(List<?> testSet) {
+    List<Object> seenBySeq = new LinkedList<>();
+    Iters.asSeq(testSet.iterator()).forEach(seenBySeq::add);
+    assertEquals(testSet, seenBySeq);
+  }
+
+  static Stream<Arguments> asSeq() {
+    return Stream.of(Arguments.of(Arrays.asList()), Arguments.of(Arrays.asList('A', 65)));
+  }
+
+  @ParameterizedTest
+  @MethodSource
+  void asIntSeq(int[] testSet) {
+    IntStream.Builder seenBySeq = IntStream.builder();
+    Iters.asIntSeq(IntStream.of(testSet).iterator()).forEach(seenBySeq::add);
+    assertArrayEquals(testSet, seenBySeq.build().toArray());
+  }
+
+  static Stream<Arguments> asIntSeq() {
+    return Stream.of(Arguments.of(new int[] {}), Arguments.of(new int[] {1, 2, 1, 3}));
   }
 }

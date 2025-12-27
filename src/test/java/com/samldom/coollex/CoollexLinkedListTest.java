@@ -1,5 +1,5 @@
 /**
- * Copyright 2021-2024 The Cool-lex-Java Contributors, see the CONTRIBUTORS file.
+ * Copyright 2021-2025 The Cool-lex-Java Contributors, see the CONTRIBUTORS file.
  *
  * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -14,12 +14,15 @@
 package com.samldom.coollex;
 
 import static com.samldom.test.util.SimpleMath.numComb;
+import static java.util.Collections.singletonMap;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.PrimitiveIterator;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -34,52 +37,53 @@ import com.samldom.test.util.SimpleMath;
 import com.samldom.util.iter.IntSeq;
 import com.samldom.util.iter.Seq;
 
-public class CoollexLinkedListTest {
+class CoollexLinkedListTest {
 
   @ParameterizedTest
   @MethodSource
-  public void testLinkedList(int n, int k) {
-    // array index denotes an element
-    // value at given index denotes how many times this element appeared in a combination
-    int[] hits = new int[n];
-    Arrays.fill(hits, 0);
-
-    // total number of combinations yielded by the algorithm
-    int numComb = 0;
-    for (Iterator<PrimitiveIterator.OfInt> combIter = CoollexLinkedList.combinations(n, k);
-        combIter.hasNext();
-        ++numComb) {
-
-      // number of elements in this combination
-      int numElem = 0;
-      for (PrimitiveIterator.OfInt elemIter = combIter.next();
-          elemIter.hasNext();
-          ++numElem, ++hits[elemIter.nextInt()])
-        ;
-
-      assertEquals(k, numElem, "number of elements in a combination");
-    }
-
-    assertEquals(numComb(n, k), numComb, "number of combinations");
-
-    long occur = numComb(n - 1, k - 1);
-    for (int hit : hits) {
-      assertEquals(occur, hit, "number of combinations where each element appears");
-    }
+  <R> void linkedList(int n, int k, TestOracle<R> oracle, TestedAlgorithm<R> alg) {
+    oracle.test(n, k, alg);
   }
 
-  static Stream<Arguments> testLinkedList() {
-    return Stream.of(
-        Arguments.of(1, 1),
-        Arguments.of(10, 4),
-        Arguments.of(15, 6),
-        Arguments.of(15, 7),
-        Arguments.of(49, 6),
-        Arguments.of(9, 9));
+  static Stream<Arguments> linkedList() {
+    TestedAlgorithm<Seq<IntSeq>> seqAlg = CoollexLinkedList::sequence;
+    TestedAlgorithm<Seq<IntSeq>> iterAlg =
+        (n, k) ->
+            yield ->
+                Iters.asSeq(CoollexLinkedList.combinations(n, k))
+                    .doWhile(ofInt -> yield.test(Iters.asIntSeq(ofInt)));
+
+    List<TestedAlgorithm<?>> algs = Arrays.asList(seqAlg, iterAlg);
+
+    return Stream.concat(
+        Stream.concat(
+            llTestArgs(
+                new int[][] {{1, 1}, {9, 9}, {10, 4}, {15, 8}, {15, 7}, {25, 13}},
+                singletonMap(TestOracles.sequence(), algs)),
+            llTestArgs(
+                new int[][] {{1, 0}, {2, 0}, {3, 0}, {0, 0}, {Integer.MAX_VALUE, 0}},
+                singletonMap(TestOracles.emptySequence(), algs))),
+        llTestArgs(
+            new int[][] {{1, 2}, {-1, -2}, {-1, 0}},
+            singletonMap(TestOracles.throwing(IllegalArgumentException.class), algs)));
+  }
+
+  private static Stream<Arguments> llTestArgs(
+      int[][] tc, Map<TestOracle<?>, List<TestedAlgorithm<?>>> oracles) {
+    return Arrays.stream(tc)
+        .flatMap(
+            (nk) ->
+                oracles.entrySet().stream()
+                    .flatMap(
+                        entry ->
+                            entry.getValue().stream()
+                                .map(
+                                    algorithm ->
+                                        Arguments.of(nk[0], nk[1], entry.getKey(), algorithm))));
   }
 
   @Test
-  public void testElementIterator() {
+  void elementIterator() {
     testElementsIterator(3, 2);
   }
 
@@ -95,7 +99,7 @@ public class CoollexLinkedListTest {
   }
 
   @Test
-  public void testCombinationsIterator() {
+  void combinationsIterator() {
     testCombinationsIterator(3, 2);
   }
 
@@ -109,59 +113,9 @@ public class CoollexLinkedListTest {
     assertFalse(combIter.hasNext(), "hasNext() after all combinations yielded");
   }
 
-  @Test
-  public void testLinkedListSequence() {
-    class Tester {
-      void test(int n, int k) {
-        // array index denotes an element
-        // value at given index denotes how many times this element appeared in a combination
-        int[] hits = new int[n];
-        Arrays.fill(hits, 0);
-
-        class IntVar {
-          int val = 0;
-        }
-
-        // total number of combinations yielded by the algorithm
-        IntVar numComb = new IntVar();
-
-        // number of elements in the current combination
-        IntVar numElem = new IntVar();
-
-        Seq<IntSeq> sequence = CoollexLinkedList.sequence(n, k);
-        sequence.forEach(
-            combination -> {
-              ++numComb.val;
-              combination.forEach(
-                  element -> {
-                    ++numElem.val;
-                    ++hits[element];
-                  });
-
-              assertEquals(k, numElem.val, "number of elements in a combination");
-              numElem.val = 0;
-            });
-
-        assertEquals(numComb(n, k), numComb.val, "number of combinations");
-
-        long occur = numComb(n - 1, k - 1);
-        for (int hit : hits) {
-          assertEquals(occur, hit, "number of combinations where each element appears");
-        }
-      }
-    }
-    Tester tester = new Tester();
-
-    tester.test(1, 1);
-    tester.test(9, 9);
-    tester.test(10, 4);
-    tester.test(15, 6);
-    tester.test(15, 7);
-  }
-
   @ParameterizedTest
   @MethodSource
-  public void testSameThreadMultipleInstances(int n, int k) {
+  void sameThreadMultipleInstances(int n, int k) {
     // verify test preconditions
     assertTrue(SimpleMath.numComb(n, k) > 1);
 
@@ -181,7 +135,7 @@ public class CoollexLinkedListTest {
             Iters.sorted(elementsOfA)));
   }
 
-  static Stream<Arguments> testSameThreadMultipleInstances() {
+  static Stream<Arguments> sameThreadMultipleInstances() {
     return Stream.of(Arguments.of(3, 2));
   }
 }
