@@ -211,14 +211,14 @@ public class CoollexLinkedList {
     }
   }
 
-  static Seq<IntSeq> combinationsSeq(Algorithm coollex) {
+  private static Seq<IntSeq> combinationsSeq(Algorithm coollex) {
     return yield -> {
       for (; yield.test(elementsSeq(coollex.b)) && coollex.hasNext(); coollex.next())
         ;
     };
   }
 
-  static IntSeq elementsSeq(Algorithm.Node from) {
+  private static IntSeq elementsSeq(Algorithm.Node from) {
     return yield -> {
       int i = 0;
       for (Algorithm.Node curr = from;
