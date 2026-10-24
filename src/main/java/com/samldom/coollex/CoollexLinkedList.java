@@ -82,7 +82,7 @@ public class CoollexLinkedList {
         : combinationsSeq(new Algorithm(n - k, k));
   }
 
-  static class Algorithm {
+  private static class Algorithm {
 
     // b -- the head of the list; this is the node with the greatest "index"
     // x -- the first node, right-to-left, whose value is 1 and whose predecessor's value is 0
@@ -98,12 +98,12 @@ public class CoollexLinkedList {
       x = b;
 
       while (--t > 0) {
-        x = x.createNext(true);
+        x = x.next = new Node(true);
       }
 
       Node last = x;
       while (--s >= 0) {
-        last = last.createNext(false);
+        last = last.next = new Node(false);
       }
     }
 
@@ -134,18 +134,12 @@ public class CoollexLinkedList {
       return buf.toString();
     }
 
-    static class Node {
-      boolean value;
+    private static class Node {
+      final boolean value;
       Node next;
 
       Node(boolean value) {
         this.value = value;
-      }
-
-      Node createNext(boolean value) {
-        Node next = new Node(value);
-        this.next = next;
-        return next;
       }
     }
   }
