@@ -92,7 +92,7 @@ Ideas:
     <dependency>
       <groupId>com.samldom.coollex</groupId>
       <artifactId>cool-lex-java</artifactId>
-      <version>1.1.5</version>
+      <version>1.1.6</version>
      </dependency>
     </dependencies>
 </project>
