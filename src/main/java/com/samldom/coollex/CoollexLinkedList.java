@@ -83,28 +83,20 @@ public class CoollexLinkedList {
   }
 
   private static class Algorithm {
-
     // b -- the head of the list; this is the node with the greatest "index"
     // x -- the first node, right-to-left, whose value is 1 and whose predecessor's value is 0
-    Node b, x;
+    Node b = new Node(true), x;
 
     /**
      * @param s the number of {@code 0}-bits.
      * @param t the number of {@code 1}-bits. Must be {@code >0}.
      */
     Algorithm(int s, int t) {
+      for (x = b; --t > 0; x = x.next = new Node(true))
+        ;
 
-      b = new Node(true);
-      x = b;
-
-      while (--t > 0) {
-        x = x.next = new Node(true);
-      }
-
-      Node last = x;
-      while (--s >= 0) {
-        last = last.next = new Node(false);
-      }
+      for (Node last = x; --s >= 0; last = last.next = new Node(false))
+        ;
     }
 
     /** Advances to the next combination. */
@@ -145,7 +137,6 @@ public class CoollexLinkedList {
   }
 
   private static class CombinationsIterator implements Iterator<OfInt> {
-
     private final Algorithm coolLex;
     private boolean first = true;
 
@@ -155,10 +146,10 @@ public class CoollexLinkedList {
 
     @Override
     public boolean hasNext() {
+      // the algorithm is initially positioned at the first combination:
       return first || coolLex.hasNext();
     }
 
-    // the algorithm is initially positioned at the first combination
     @Override
     public OfInt next() {
       if (!first) {
@@ -168,46 +159,46 @@ public class CoollexLinkedList {
         coolLex.next();
       }
       first = false; // avoid branches
-      return new SelectedIndicesIterator();
+      return new SelectedIndicesIterator(coolLex.b);
+    }
+  }
+
+  /**
+   * Example:
+   *
+   * <pre>
+   * combination:      1101001
+   *                   ^^ ^  ^
+   * iterator yields:  01 3  6
+   * </pre>
+   */
+  private static class SelectedIndicesIterator implements OfInt {
+    private Algorithm.Node currNode;
+    private int i;
+
+    SelectedIndicesIterator(Algorithm.Node fromNode) {
+      nextValueTrueNode(fromNode);
     }
 
-    /**
-     * Example:
-     *
-     * <pre>
-     * combination:      1101001
-     *                   ^^ ^  ^
-     * iterator yields:  01 3  6
-     * </pre>
-     */
-    private class SelectedIndicesIterator implements OfInt {
-      private Algorithm.Node currNode;
-      private int i;
+    @Override
+    public boolean hasNext() {
+      return currNode != null;
+    }
 
-      SelectedIndicesIterator() {
-        nextValueTrueNode(coolLex.b);
+    @Override
+    public int nextInt() {
+      if (currNode == null) {
+        throw new NoSuchElementException();
       }
+      int retval = i++;
+      nextValueTrueNode(currNode.next);
 
-      @Override
-      public boolean hasNext() {
-        return currNode != null;
-      }
+      return retval;
+    }
 
-      @Override
-      public int nextInt() {
-        if (currNode == null) {
-          throw new NoSuchElementException();
-        }
-        int retval = i++;
-        nextValueTrueNode(currNode.next);
-
-        return retval;
-      }
-
-      private void nextValueTrueNode(Algorithm.Node from) {
-        for (currNode = from; currNode != null && !currNode.value; currNode = currNode.next, i++)
-          ;
-      }
+    private void nextValueTrueNode(Algorithm.Node from) {
+      for (currNode = from; currNode != null && !currNode.value; currNode = currNode.next, i++)
+        ;
     }
   }
 
