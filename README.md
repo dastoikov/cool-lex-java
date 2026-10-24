@@ -64,7 +64,7 @@ CoollexLinkedList.combinations(3, 2)
 
 Minimum Java 8.
 
-Porting to earlier versions is straightforward.
+Porting to earlier versions is straightforward, except for tests which use JUnit 5 (Java >=8).
 
 No additional dependencies.
 
