@@ -85,14 +85,14 @@ public class CoollexLinkedList {
   private static class Algorithm {
     // b -- the head of the list; this is the node with the greatest "index"
     // x -- the first node, right-to-left, whose value is 1 and whose predecessor's value is 0
-    Node b = new Node(true), x;
+    Node x = new Node(true), b = x;
 
     /**
      * @param s the number of {@code 0}-bits.
      * @param t the number of {@code 1}-bits. Must be {@code >0}.
      */
     Algorithm(int s, int t) {
-      for (x = b; --t > 0; x = x.next = new Node(true))
+      for (; --t > 0; x = x.next = new Node(true))
         ;
 
       for (Node last = x; --s >= 0; last = last.next = new Node(false))
