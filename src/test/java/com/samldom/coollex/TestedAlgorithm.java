@@ -17,8 +17,7 @@ package com.samldom.coollex;
  * A Cool-lex algorithm implementation. A unified API to aid in <em>testing</em> the different
  * algorithm implementations in a uniform way.
  *
- * @param <R> the type used by this algorithm implementation to represent the generated
- *     combinations.
+ * @param <R> the type used by this algorithm to represent combinations.
  */
 interface TestedAlgorithm<R> {
   /**
@@ -32,4 +31,27 @@ interface TestedAlgorithm<R> {
    *     when taken together.
    */
   R combinations(int n, int k);
+
+  /**
+   * Shorthand for creating named instances. Names are used in assertion messages.
+   *
+   * @param name the name
+   * @param algorithm the tested algorithm to be assigned a name.
+   * @param <R> the type used by {@code r} to represent the generated combinations.
+   * @return a tested algorithm delegating the run to {@code r}, overriding {@code r.toString()}.
+   */
+  static <R> TestedAlgorithm<R> named(String name, TestedAlgorithm<? extends R> algorithm) {
+    return new TestedAlgorithm<R>() {
+
+      @Override
+      public R combinations(int n, int k) {
+        return algorithm.combinations(n, k);
+      }
+
+      @Override
+      public String toString() {
+        return name;
+      }
+    };
+  }
 }

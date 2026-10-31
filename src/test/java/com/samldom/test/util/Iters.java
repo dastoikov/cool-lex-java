@@ -14,13 +14,9 @@
 package com.samldom.test.util;
 
 import java.util.Iterator;
-import java.util.Objects;
 import java.util.PrimitiveIterator;
-import java.util.PrimitiveIterator.OfInt;
 import java.util.Spliterator;
 import java.util.Spliterators;
-import java.util.function.IntPredicate;
-import java.util.function.Predicate;
 import java.util.stream.StreamSupport;
 
 import com.samldom.util.iter.IntSeq;
@@ -85,21 +81,11 @@ public class Iters {
    * @throws NullPointerException if {@code iter} is null.
    */
   public static <T> Seq<T> asSeq(Iterator<? extends T> iter) {
-    return new IterToSeq<>(Objects.requireNonNull(iter));
-  }
-
-  static class IterToSeq<T> implements Seq<T> {
-    final Iterator<? extends T> iter;
-
-    IterToSeq(Iterator<? extends T> iter) {
-      this.iter = iter;
-    }
-
-    @Override
-    public void doWhile(Predicate<? super T> yield) {
+    if (iter == null) throw new NullPointerException();
+    return yield -> {
       while (iter.hasNext() && yield.test(iter.next()))
         ;
-    }
+    };
   }
 
   /**
@@ -111,20 +97,10 @@ public class Iters {
    * @throws NullPointerException if {@code iter} is null.
    */
   public static IntSeq asIntSeq(PrimitiveIterator.OfInt iter) {
-    return new OfIntToIntSeq(Objects.requireNonNull(iter));
-  }
-
-  static class OfIntToIntSeq implements IntSeq {
-    final OfInt iter;
-
-    OfIntToIntSeq(OfInt iter) {
-      this.iter = iter;
-    }
-
-    @Override
-    public void doWhile(IntPredicate yield) {
+    if (iter == null) throw new NullPointerException();
+    return yield -> {
       while (iter.hasNext() && yield.test(iter.next()))
         ;
-    }
+    };
   }
 }

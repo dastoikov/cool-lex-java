@@ -17,107 +17,108 @@ import static com.samldom.test.util.SimpleMath.numComb;
 import static java.util.Collections.singletonMap;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.PrimitiveIterator;
+import java.util.PrimitiveIterator.OfInt;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import com.samldom.test.util.Iters;
-import com.samldom.test.util.SimpleMath;
 import com.samldom.util.iter.IntSeq;
 import com.samldom.util.iter.Seq;
 
+/** Tests for the {@link CoollexLinkedList} class. */
 class CoollexLinkedListTest {
 
-  @ParameterizedTest
+  @ParameterizedTest(name = "n={0} k={1} alg={3}")
   @MethodSource
   <R> void linkedList(int n, int k, TestOracle<R> oracle, TestedAlgorithm<R> alg) {
     oracle.test(n, k, alg);
   }
 
   static Stream<Arguments> linkedList() {
-    TestedAlgorithm<Seq<IntSeq>> seqAlg = CoollexLinkedList::sequence;
+    TestedAlgorithm<Seq<IntSeq>> seqAlg =
+        TestedAlgorithm.named("sequence(..)", CoollexLinkedList::sequence);
     TestedAlgorithm<Seq<IntSeq>> iterAlg =
-        (n, k) ->
-            yield ->
-                Iters.asSeq(CoollexLinkedList.combinations(n, k))
-                    .doWhile(ofInt -> yield.test(Iters.asIntSeq(ofInt)));
+        TestedAlgorithm.named(
+            "combinations(..)",
+            (n, k) -> {
+              Iterator<OfInt> ii = CoollexLinkedList.combinations(n, k);
+              return yield -> Iters.asSeq(ii).doWhile(ofInt -> yield.test(Iters.asIntSeq(ofInt)));
+            });
 
-    List<TestedAlgorithm<?>> algs = Arrays.asList(seqAlg, iterAlg);
+    TestedAlgorithm<?>[] algs = {seqAlg, iterAlg};
 
-    return Stream.concat(
-        Stream.concat(
-            llTestArgs(
+    return Stream.of(
+            args(
                 new int[][] {{1, 1}, {9, 9}, {10, 4}, {15, 8}, {15, 7}, {25, 13}},
                 singletonMap(TestOracles.sequence(), algs)),
-            llTestArgs(
+            args(
                 new int[][] {{1, 0}, {2, 0}, {3, 0}, {0, 0}, {Integer.MAX_VALUE, 0}},
-                singletonMap(TestOracles.emptySequence(), algs))),
-        llTestArgs(
-            new int[][] {{1, 2}, {-1, -2}, {-1, 0}},
-            singletonMap(TestOracles.throwing(IllegalArgumentException.class), algs)));
+                singletonMap(TestOracles.emptySequence(), algs)),
+            args(
+                new int[][] {{1, 2}, {-1, -2}, {-1, 0}},
+                singletonMap(TestOracles.throwing(IllegalArgumentException.class), algs)))
+        .flatMap(s -> s);
   }
 
-  private static Stream<Arguments> llTestArgs(
-      int[][] tc, Map<TestOracle<?>, List<TestedAlgorithm<?>>> oracles) {
-    return Arrays.stream(tc)
+  private static Stream<Arguments> args(
+      int[][] testCases, Map<TestOracle<?>, TestedAlgorithm<?>[]> algorithmsByOracle) {
+    return Stream.of(testCases)
         .flatMap(
-            (nk) ->
-                oracles.entrySet().stream()
+            nk ->
+                algorithmsByOracle.entrySet().stream()
                     .flatMap(
                         entry ->
-                            entry.getValue().stream()
+                            Stream.of(entry.getValue())
                                 .map(
                                     algorithm ->
-                                        Arguments.of(nk[0], nk[1], entry.getKey(), algorithm))));
+                                        Arguments.of(
+                                            nk[0] /*n*/,
+                                            nk[1] /*k*/,
+                                            entry.getKey() /*test oracle*/,
+                                            algorithm /*tested algorithm*/))));
   }
 
-  @Test
-  void elementIterator() {
-    testElementsIterator(3, 2);
-  }
-
-  private static void testElementsIterator(int n, int k) {
+  @ParameterizedTest
+  @CsvSource({"3, 2"})
+  void elementIterator(int n, int k) {
     for (Iterator<PrimitiveIterator.OfInt> combIter = CoollexLinkedList.combinations(n, k);
         combIter.hasNext(); ) {
-
       PrimitiveIterator.OfInt elemIter = combIter.next();
       for (int i = 0; i < k; ++i, elemIter.next())
         ;
       assertFalse(elemIter.hasNext(), "hasNext() after all elements yielded");
+      assertThrows(NoSuchElementException.class, elemIter::next);
     }
-  }
-
-  @Test
-  void combinationsIterator() {
-    testCombinationsIterator(3, 2);
-  }
-
-  private static void testCombinationsIterator(int n, int k) {
-    Iterator<PrimitiveIterator.OfInt> combIter = CoollexLinkedList.combinations(n, k);
-    long j = numComb(n, k);
-
-    while (--j >= 0) {
-      combIter.next();
-    }
-    assertFalse(combIter.hasNext(), "hasNext() after all combinations yielded");
   }
 
   @ParameterizedTest
-  @MethodSource
+  @CsvSource({"3, 2"})
+  void combinationsIterator(int n, int k) {
+    Iterator<PrimitiveIterator.OfInt> combIter = CoollexLinkedList.combinations(n, k);
+    for (long c = numComb(n, k); --c >= 0; combIter.next())
+      ;
+    assertFalse(combIter.hasNext(), "hasNext() after all combinations yielded");
+    assertThrows(NoSuchElementException.class, combIter::next);
+  }
+
+  @ParameterizedTest
+  @CsvSource({"3, 2"})
   void sameThreadMultipleInstances(int n, int k) {
+
     // verify test preconditions
-    assertTrue(SimpleMath.numComb(n, k) > 1);
+    assertTrue(numComb(n, k) > 1);
 
     Iterator<PrimitiveIterator.OfInt> a = CoollexLinkedList.combinations(n, k);
     Iterator<PrimitiveIterator.OfInt> b = CoollexLinkedList.combinations(n, k);
@@ -133,9 +134,5 @@ class CoollexLinkedListTest {
             IntStream.range(0, k).iterator(),
             // sort indices, as there are no guarantees of any particular element order
             Iters.sorted(elementsOfA)));
-  }
-
-  static Stream<Arguments> sameThreadMultipleInstances() {
-    return Stream.of(Arguments.of(3, 2));
   }
 }
