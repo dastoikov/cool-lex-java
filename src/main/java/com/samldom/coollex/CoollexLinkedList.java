@@ -213,8 +213,8 @@ public class CoollexLinkedList {
     return yield -> {
       int i = 0;
       for (Algorithm.Node curr = from;
-          curr != null && (!curr.value || yield.test(i));
-          curr = curr.next, i++)
+          (!curr.value || yield.test(i)) && (curr = curr.next) != null;
+          i++)
         ;
     };
   }
