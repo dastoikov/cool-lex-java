@@ -7,11 +7,12 @@ The code in this repository is authored by the cool-lex-java [contributors](CONT
 
 ## Notes
 
-Golang-style iterators offer between 7% and 8% better performance compared to classic Java iterators.
+Go-style iterators offer between 7% and 8% better performance compared to classic Java iterators.
 
 ## Examples
 
-[Golang-style](https://pkg.go.dev/iter) iterators:
+Go-style iterators (in Go: [pkg.go.dev/iter](https://pkg.go.dev/iter),
+and in here: [Seq.java](./src/main/java/com/samldom/util/iter/Seq.java)):
 
 ```java
  CoollexLinkedList.sequence(3, 2)
