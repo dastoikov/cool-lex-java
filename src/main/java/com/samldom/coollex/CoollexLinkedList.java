@@ -210,7 +210,7 @@ public class CoollexLinkedList {
   }
 
   private static IntSeq elementsSeq(Algorithm.Node from) {
-    return yield -> {
+    return yield -> { // assert from != null
       int i = 0;
       for (Algorithm.Node curr = from;
           (!curr.value || yield.test(i)) && (curr = curr.next) != null;
